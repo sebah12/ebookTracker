@@ -1,0 +1,32 @@
+#+FILETAGS: :python:FastApi:ebook:Amazon:learning:
+#+TODO: TODO STARTED | DONE CANCELED
+* Amazon ebook price tracker
+The goal of this project is to practice building a simple cron job to keep track of Amazon ebook's prices. The idea is to do something similar to [[https://www.ereaderiq.com/][eraderiq]], but simpler and for a single user running on a local server to get prices according to the user zone. 
+** Stack
+ - Python
+ - Selenium
+ - Postgresql
+ - Amazon SES
+ - [[https://fastapi.tiangolo.com/][FastAPI]] ??
+ - Docker ??
+** Steps
+*** Find out how to scrape info from Amazon
+My first attempt will be to access my Amazon's wishlist page and extract the information on each book.
+
+- Difficulties:
+
+  1) Must be signed in to see the prices for my user account?
+     To address this I will try with [[www.seleniumhq.org/docs/][Selenium]], to start I will follow this short [[https://realpython.com/modern-web-automation-with-python-and-selenium/][tutorial]] and the Selenium doc page.
+     - The first problem I encounter with my setup on Ubuntu 22.04.3 was with Firefox and gecko driver. It is related to this version of Ubuntu and snap I think, so for the moment I will use Chrome that works fine.
+     - In order to see the correct prices for my account I must be logged in. This step was not so difficult following some of the examples in the documentation.
+
+  2) CAPTCHA
+     Amazon sometimes displays a captcha before displaying the wishlist page. To solve this I set different window sizes and start a new connection each time with a random size until the wishlist with the login button is displayed. *(Note: this needs more thorough testing)*
+
+  3) Wishlist page source is not complete?
+     The page is dynamically updated through scrolling. In order to get all the items in the list I navigate to the footer and wait 10 seconds. (Note: if the size of the wishlist is bigger, maybe more time will be needed)
+
+  4) Retrieving book info. 
+
+
+
