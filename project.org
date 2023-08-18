@@ -27,6 +27,8 @@ My first attempt will be to access my Amazon's wishlist page and extract the inf
      The page is dynamically updated through scrolling. In order to get all the items in the list I navigate to the footer and wait 10 seconds. (Note: if the size of the wishlist is bigger, maybe more time will be needed)
 
   4) Retrieving book info. 
+     After identifying the items in the DOM, I was able to get the following info:
+     item: {id_code, title, price, author, href}
 
 
 
