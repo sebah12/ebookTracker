@@ -121,7 +121,7 @@ class WishlistTracker:
 
         # return a dictionary with all the items and their attributes
         for i in range(len(items)):
-            items_dict[items_ids[i]] = {"item_id": items_ids[i],
+            items_dict[items_ids[i]] = {"code": items_ids[i],
                                         "title": items_titles[i],
                                         "price": float(items_prices[i]),
                                         "href": items_href[i],
