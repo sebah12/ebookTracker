@@ -67,6 +67,17 @@ class WishlistScraper:
         # Enter password and click submit
         input_box.send_keys(password)
         submit_button.click()
+
+        # Once logged in
+        # Find Footer and return True, else return False
+        try:
+            _ = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.ID,
+                                                "navFooter"))
+                )
+        except TimeoutException:
+            driver.quit()
+            return False
         return True
 
     def get_items(driver):
