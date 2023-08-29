@@ -1,3 +1,4 @@
+import logging
 from random import choice
 from time import sleep
 from selenium import webdriver
@@ -26,6 +27,7 @@ class WishlistScraper:
         window_size = choice(WINDOW_SIZES)
         print(window_size)
         options.add_argument("--window-size=" + window_size)
+        logging.info(f"Connecting to {url} with WINDOW_SIZE = {window_size}")
         driver = webdriver.Chrome(options=options)
         # Implicit wait
         driver.implicitly_wait(3)   # seconds
@@ -45,6 +47,7 @@ class WishlistScraper:
                                                 "nav-link-accountList"))
                 )
         except TimeoutException:
+            logging.info("Couldn't find Log in button.")
             driver.quit()
             return False
 
@@ -76,6 +79,7 @@ class WishlistScraper:
                                                 "navFooter"))
                 )
         except TimeoutException:
+            logging.info("Exiting after Signing in because additional information was required.")
             driver.quit()
             return False
         return True
