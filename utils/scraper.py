@@ -1,4 +1,4 @@
-from random import random
+from random import choice
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver import ActionChains
@@ -23,7 +23,7 @@ class WishlistScraper:
         """Connect to driver and go to wishlist page."""
         # Create window of random size
         options = webdriver.ChromeOptions()
-        window_size = WINDOW_SIZES[int(len(WINDOW_SIZES) * random())]
+        window_size = choice(WINDOW_SIZES)
         print(window_size)
         options.add_argument("--window-size=" + window_size)
         driver = webdriver.Chrome(options=options)
@@ -32,8 +32,6 @@ class WishlistScraper:
 
         # Navigate to the url
         driver.get(url)
-        # Implicit wait
-        driver.implicitly_wait(0.5)
 
         # #### In Whishlist page ####
         return driver
