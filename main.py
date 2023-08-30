@@ -1,4 +1,8 @@
+#!/usr/bin/env python
+
 import sys
+import inspect
+import os
 import asyncio
 import logging
 from decouple import config
@@ -13,6 +17,8 @@ PASSWORD = config("PASSWORD")
 WISHLIST_URL = "https://www.amazon.com/hz/wishlist/ls/3I84B5IFV53GK/"
 CONNECTION_ATTEMPTS = 10
 LOG_LEVEL = "INFO"
+FILENAME = inspect.getframeinfo(inspect.currentframe()).filename
+BASE_DIR = os.path.dirname(os.path.abspath(FILENAME))
 
 
 def scrape_wishlist():
@@ -52,8 +58,9 @@ async def main():
     logging.basicConfig(
         format='%(asctime)s %(levelname)s:%(message)s',
         level=logging.INFO,
-        filename='ebookTracker.log'
+        filename=os.path.join(BASE_DIR, 'ebookTracker.log')
     )
+    print(os.path.join(BASE_DIR, 'ebookTracker.log'))
     # Configure selenium logger
     logger_selenium = logging.getLogger('selenium')
     logger_selenium.setLevel(logging.WARNING)
