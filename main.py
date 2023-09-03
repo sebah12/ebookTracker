@@ -10,6 +10,8 @@ from db import database
 from managers.item import ItemManager
 from managers.price import PriceManager
 from utils.scraper import WishlistScraper
+from utils.email_formatter import EmailFormatter
+from services.ses import SESService
 
 
 EMAIL = config("EMAIL")
@@ -19,6 +21,8 @@ CONNECTION_ATTEMPTS = 10
 LOG_LEVEL = "INFO"
 FILENAME = inspect.getframeinfo(inspect.currentframe()).filename
 BASE_DIR = os.path.dirname(os.path.abspath(FILENAME))
+SOURCE_EMAIL = config("EMAIL_SOURCE")
+DESTINATION_EMAIL = config("EMAIL_DESTINATION")
 
 
 def scrape_wishlist():
@@ -70,6 +74,9 @@ async def main():
     # Start script
     logging.info('STARTING. Connecting to DB')
     await startup()
+    # Instantiate a SES Service
+    ses = SESService()
+    # Get Items from Amazon wishlist
     items_ = scrape_wishlist()
     for key, value in items_.items():
         # Extract price value from dict
@@ -93,11 +100,35 @@ async def main():
         elif latest_price['price'] != price:
             item_price = await PriceManager.insert_item_price(price_data)
             logging.info(f"Diff price, inserting: {it['title']}, ${item_price['price']}")
-            # TODO: if price is lower send email notification
+            # If price is lower log it and send email
             if price < latest_price['price']:
                 logging.info(f"Price for {it['title']} dropped from ${latest_price['price']} to ${price}")
+                # SEND MAIL if price dropped more than 10% or price < $3
+                if price < 3 or (price / latest_price['price']) < 0.9:
+                    # Format text message body
+                    text_body = EmailFormatter.format_html(
+                        item_price['date'],
+                        it['title'],
+                        it['author'],
+                        latest_price['price'],
+                        price,
+                        it['href'])
+                    # Format html message body
+                    html_body = EmailFormatter.format_html(
+                        item_price['date'],
+                        it['title'],
+                        it['author'],
+                        latest_price['price'],
+                        price,
+                        it['href'])
+                    # send mail
+                    ses.send_email(
+                        SOURCE_EMAIL,
+                        [DESTINATION_EMAIL],
+                        "New ebook Price Alert",
+                        text_body,
+                        html_body)
 
-    # DEBUG
     logging.info("Ending program normally.")
     await shutdown()
 
